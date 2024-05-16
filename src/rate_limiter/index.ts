@@ -33,9 +33,9 @@ export class RateLimiter implements IRateLimiter {
     if (!limit) {
       throw new Error('Unsupported type - ${type}');
     }
-    
-    let cachedV: Limit = await this.client.get(key) ?? limit ;
-    
+
+    const cachedV: Limit = (await this.client.get(key)) ?? limit;
+
     if (cachedV.count >= limit.maximum) {
       return false;
     }
@@ -45,11 +45,10 @@ export class RateLimiter implements IRateLimiter {
     await this.client.set(key, cachedV, limit.expiresAt);
     return true;
   }
-
 }
 
 export interface IRateLimiter {
-  check(key: string, type: LimitType): Promise<boolean>
+  check(key: string, type: LimitType): Promise<boolean>;
 }
 
 export interface Limit {

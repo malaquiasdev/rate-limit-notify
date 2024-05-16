@@ -20,7 +20,7 @@ console.log('running!');
     const result2 = await notification.send(not1);
     console.log('2', result2);
     const result3 = await notification.send(not1);
-    console.log('3', result3)
+    console.log('3', result3);
   } catch (error) {
     console.error(error);
   }
