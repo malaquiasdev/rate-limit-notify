@@ -1,33 +1,27 @@
-console.log('Try npm run lint/fix!');
+import NodeCache = require('node-cache');
+import {RateLimiter} from './rate_limiter/index';
+import {Gateway} from './gateway';
+import {Notification, Notify} from './notification';
 
-const longString =
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ut aliquet diam.';
+console.log('running!');
 
-const trailing = 'Semicolon';
-
-const why = {am: 'I tabbed?'};
-
-const iWish = "I didn't have a trailing space...";
-
-const sicilian = true;
-
-const vizzini = sicilian ? !sicilian : sicilian;
-
-const re = /foo {3}bar/;
-
-export function doSomeStuff(
-  withThis: string,
-  andThat: string,
-  andThose: string[]
-) {
-  //function on one line
-  if (!andThose.length) {
-    return false;
+(async () => {
+  try {
+    const not1: Notify = {
+      type: 'STATUS',
+      userId: '1',
+      message: 'online',
+    };
+    const gateway = new Gateway();
+    const limiter = new RateLimiter(new NodeCache());
+    const notification = new Notification(limiter, gateway);
+    const result1 = await notification.send(not1);
+    console.log('1', result1);
+    const result2 = await notification.send(not1);
+    console.log('2', result2);
+    const result3 = await notification.send(not1);
+    console.log('3', result3);
+  } catch (error) {
+    console.error(error);
   }
-  console.log(withThis);
-  console.log(andThat);
-  console.dir(andThose);
-  console.log(longString, trailing, why, iWish, vizzini, re);
-  return;
-}
-// TODO: more examples
+})();
