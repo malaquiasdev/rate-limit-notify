@@ -26,7 +26,7 @@ describe("RateLimiter", () => {
       expect(allowed).toBeTruthy()
     })
     
-    test('should allows 2 requests for type STATUS', async () => {
+    test('should allows 2 requests', async () => {
       const key = 'mockUserId'
       const type = 'STATUS'
 
@@ -36,6 +36,19 @@ describe("RateLimiter", () => {
       const allowed = await rateLimiter.check(key, type)
       expect(allowed).toBeTruthy()
       expect(mockCache.set).toHaveBeenCalledWith(key, { type, expiresAt: 120, maximum: 2, count: 2}, 120);
+    })
+
+    test('should not allow when count is eq to maximum', async () => {
+      const key = 'mockUserId'
+      const type = 'STATUS'
+
+      mockCache.get.mockReturnValueOnce(undefined)
+      await rateLimiter.check(key, type)
+      await rateLimiter.check(key, type)
+      
+      const allowed = await rateLimiter.check(key, type)
+      expect(allowed).toBeFalsy()
+      expect(mockCache.set).toHaveBeenCalledTimes(2)
     })
   })
 })
